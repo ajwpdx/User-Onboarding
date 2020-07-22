@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Users from './Users'
 import Form from './Form'
+import formSchema from './validation/formSchema'
 import './App.css';
+
 
 const teamList = []
 
@@ -58,8 +60,8 @@ function App() {
     <div className="App">
       <Form
         values={formValues}
-        update={updateForm}
-        submit={submitForm}
+        updateForm={updateForm}
+        submitForm={submitForm}
         {...team.map(member => {
           return (
             <Users key={member.email} details={member} />

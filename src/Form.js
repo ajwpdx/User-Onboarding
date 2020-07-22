@@ -3,22 +3,22 @@ import React from 'react';
 
 export default function Form(props) {
     
-    const { values, update, submit } = props
+    const { values, updateForm, submitForm } = props
 
     const onChange = evt => { 
     const name = evt.target.name
     const value = evt.target.value
-    update(name, value)
+    updateForm(name, value)
   }
 
     const onSubmit = evt => {
        evt.preventDefault()
-       submit()
+       submitForm()
       }
 
     return(
         <form onSubmit={onSubmit}>
-            <h2>Add a Team Member</h2>
+            <h2>Sign Up</h2>
             <div className='form-inputs'>
             <label htmlFor='nameInput'>Name:&nbsp;
                 <input
@@ -26,7 +26,7 @@ export default function Form(props) {
                 name = 'name'
                 type = 'text'
                 placeholder= 'Enter name'
-                value='{values.name}'
+                value=''
                 onChange='{onChange}'
                 />
             </label>
@@ -36,27 +36,27 @@ export default function Form(props) {
                 name = 'email'
                 type = 'text'
                 placeholder= 'Enter email'
-                value='{values.email}'
+                value=''
                 onChange='{onChange}'
                 />
             </label>
-            <label htmlFor='passwordInput'>Email:&nbsp;
+            <label htmlFor='passwordInput'>Password:&nbsp;
                 <input
                 id = 'passwordInput'
-                name = 'email'
+                name = 'password'
                 type = 'text'
-                placeholder= 'Enter email'
-                value='{values.email}'
+                placeholder= 'Enter password'
+                value=''
                 onChange='{onChange}'
                 />
             </label>
-            <label>Role:&nbsp;
-            <select name='role' value='{values.role}' onChange='{onChange}'>
-              <option value=''>Select a role</option>
-              <option value='Skateboarder'>Skateboarder</option>
-              <option value='Surfer'>Surfer</option>
-              <option value='Snowboarder'>Snowboarder</option>
-            </select>
+            <label>
+          <input
+            type='checkbox'
+            name='terms'
+            // checked={values.hobbies.hiking === true}
+            // onChange={onCheckboxChange}
+          />Terms of Service
         </label>
             </div>
             <button>Submit</button>    
