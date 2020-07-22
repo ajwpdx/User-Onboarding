@@ -40,6 +40,16 @@ export default function Form(props) {
                 onChange='{onChange}'
                 />
             </label>
+            <label htmlFor='passwordInput'>Email:&nbsp;
+                <input
+                id = 'passwordInput'
+                name = 'email'
+                type = 'text'
+                placeholder= 'Enter email'
+                value='{values.email}'
+                onChange='{onChange}'
+                />
+            </label>
             <label>Role:&nbsp;
             <select name='role' value='{values.role}' onChange='{onChange}'>
               <option value=''>Select a role</option>
