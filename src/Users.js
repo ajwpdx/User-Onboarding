@@ -9,7 +9,7 @@ export default function Users (props) {
         <div className='team-member'>
           <h2>{details.name}</h2>
           <p><strong>Email:</strong> {details.email}</p>
-          <p><strong>Role:</strong> {details.role}</p>
+          <p><strong>Password:</strong> {details.password}</p>
         </div>
     )
     

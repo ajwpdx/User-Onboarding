@@ -36,19 +36,10 @@ const intitialFormErrors = {
 //initializes that submit button as disabled
 const intitialDisabled = true
 
-//REMOVE THIS//
-const fakeAxiosGet = () => {
-  return Promise.resolve({ status: 200, success: true, data: inititalUserList })
-}
-const fakeAxiosPost = (url, { name, email, role }) => {
-  const newMember = { name, email, role }
-  return Promise.resolve({ status: 200, success: true, data: newMember })
-}
-
 function App() {
 
-  /////////////  STATES  ////////////////
-  const [users, setUsers] = useState(inititalUserList)
+  ///// 4 SLICES OF STATE /////
+  const [users, setUsers] = useState([])
   const [formValues, setFormValues] = useState(initialFormValues)
   const [formErrors, setFormErrors] = useState(intitialFormErrors)
   const [disabled, setDisabled] = useState(intitialDisabled)
@@ -67,9 +58,9 @@ function App() {
   
   console.log(users)
 
-  //function that will POST a user when a user is submitted in the form.
+  ///// POST a user (when a user is submitted in the form) /////
   const postUsers = newUser => {
-      axios.post('https://reqres.in/api/users')
+      axios.post('https://reqres.in/api/users', newUser)
       .then(res => {
         setUsers([res.data, ...users])
         setFormValues(initialFormValues)
@@ -80,7 +71,7 @@ function App() {
       })
   }
 
-  //Setting up form validation with Yup
+  //CB function: validates with yup formSchema when there is a change in inputs
   const inputChange = (name, value) => {
     yup
       .reach(formSchema, name)
@@ -103,60 +94,68 @@ function App() {
     })
   }
 
+  //CB function: when happens when the checkbox is changed.
   const checkboxChange = (name, isChecked) => {
-    setFormValues({
-      ...formValues,
-      hobbies: {
-        ...formValues.hobbies,
-        [name]: isChecked,
-      }
+    yup
+    .reach(formSchema, name)
+    .validate(isChecked)
+    .then(valid => {
+      setFormErrors({
+        ...formErrors,
+        [name]: true,
+      })
     })
+    .catch(err => {
+      setFormErrors({
+        ...formErrors,
+        [name]: err.errors[0],
+      })
+    })
+  setFormValues({
+    ...formValues,
+    [name]: isChecked 
+  })
   }
 
-  const updateForm = (inputName, inputValue) => {
-    const updatedFormValues = { ...formValues, [inputName]: inputValue }
-    setFormValues(updatedFormValues)
-  }
-
+  //CB function: what happens with the "Submit button is pushed"
   const submitForm = () => {
-    const newTeamMember = {
+    const newUser = {
       name: formValues.name.trim(),
       email: formValues.email.trim(),
-      role: formValues.role,
+      password: formValues.password,
+      terms: formValues.terms
     }
-    if (!newTeamMember.name || !newTeamMember.email || !newTeamMember.role) return
 
-   
-
-    fakeAxiosPost('fakeapi.com', newTeamMember)
-      .then(res => {
-        setUsers([res.data, ...users])
-        setFormValues(initialFormValues)
-      })
-
+    postUsers(newUser)
   }
 
   useEffect(() => {
-    fakeAxiosGet('fakeapi.com').then(res => setUsers(res.data))
-  }, [])
- 
-
-
+    formSchema.isValid(formValues).then(valid => {
+      setDisabled(!valid)
+    })
+  }, [formValues])
 
   //JSX
   return (
     <div className="App">
       <Form
         values={formValues}
-        updateForm={updateForm}
         submitForm={submitForm}
-        // {...users.map(member => {
-        //   return (
-        //     <Users key={member.email} details={member} />
-        //   )
-        // })
-        // }
+        inputChange={inputChange}
+        checkboxChange={checkboxChange}
+        disabled={disabled}
+        formErrors={formErrors}
+
       />
+
+    {users.map(usr => {
+          return (
+            <Users 
+            key={usr.email} 
+            details={usr} />
+          )
+        })
+        }    
     </div>
   );
 }

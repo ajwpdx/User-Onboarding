@@ -37,3 +37,7 @@ form button {
   border-radius: 10px;
   width: 50%;
 }
+
+.errors {
+  color: red;
+}
