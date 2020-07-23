@@ -53,28 +53,65 @@ function App() {
   const [formErrors, setFormErrors] = useState(intitialFormErrors)
   const [disabled, setDisabled] = useState(intitialDisabled)
 
+
+  ///// GET User Data from API /////
   useEffect(() => {
     axios.get('https://reqres.in/api/users')
     .then(res => {
-      setUsers(res.data)
-      
+      setUsers(res.data.data)
       })
     .catch(err => {
       console.log('error')
     })
   }, [])
+  
   console.log(users)
 
-  useEffect(() => {
-    axios.post('https://reqres.in/api/users')
-    .then(res => {
-      console.log('success')
-    })
-    .catch(err => {
-      console.log('error')
-    })
-  }, [])
+  //function that will POST a user when a user is submitted in the form.
+  const postUsers = newUser => {
+      axios.post('https://reqres.in/api/users')
+      .then(res => {
+        setUsers([res.data, ...users])
+        setFormValues(initialFormValues)
+        console.log(users)
+      })
+      .catch(err => {
+        console.log('error')
+      })
+  }
 
+  //Setting up form validation with Yup
+  const inputChange = (name, value) => {
+    yup
+      .reach(formSchema, name)
+      .validate(value)
+      .then(valid => {
+        setFormErrors({
+          ...formErrors,
+          [name]: "",
+        })
+      })
+      .catch(err => {
+        setFormErrors({
+          ...formErrors,
+          [name]: err.errors[0],
+        })
+      })
+    setFormValues({
+      ...formValues,
+      [name]: value 
+    })
+  }
+
+  const checkboxChange = (name, isChecked) => {
+    setFormValues({
+      ...formValues,
+      hobbies: {
+        ...formValues.hobbies,
+        [name]: isChecked,
+      }
+    })
+  }
 
   const updateForm = (inputName, inputValue) => {
     const updatedFormValues = { ...formValues, [inputName]: inputValue }
