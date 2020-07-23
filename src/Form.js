@@ -75,7 +75,7 @@ export default function Form(props) {
           />Terms of Service
         </label>
       </div>
-      <button disabled={disabled}>Submit</button>
+      <button className='submit-btn' disabled={disabled}>Submit</button>
 
 {/* validation errors */}
       <div className='errors'>
