@@ -3,19 +3,22 @@ import Users from './Users'
 import Form from './Form'
 import formSchema from './validation/formSchema'
 import './App.css';
+import axios from 'axios';
+import * as yup from 'yup'
 
+const userList = []
 
-const teamList = []
-
-
+//setting up default form values so that fields are empty
 const initialFormValues = {
   name: '',
   email: '',
-  role: '',
+  password: '',
+  terms: false,
 }
 
+//REMOVE THIS//
 const fakeAxiosGet = () => {
-  return Promise.resolve({ status: 200, success: true, data: teamList })
+  return Promise.resolve({ status: 200, success: true, data: userList })
 }
 const fakeAxiosPost = (url, { name, email, role }) => {
   const newMember = { name, email, role }
@@ -26,6 +29,28 @@ const fakeAxiosPost = (url, { name, email, role }) => {
 function App() {
   const [team, setTeam] = useState([])
   const [formValues, setFormValues] = useState(initialFormValues)
+
+  useEffect(() => {
+    axios.get('https://reqres.in/api/users')
+    .then(res => {
+      console.log(res.data.data)
+      })
+    .catch(err => {
+      console.log('error')
+    })
+  }, [])
+
+  useEffect(() => {
+    axios.post('https://reqres.in/api/users')
+    .then(res => {
+      console.log(res.data)
+      setTeam(res.data)
+      console.log(team)
+    })
+    .catch(err => {
+      console.log('error')
+    })
+  }, [])
 
 
   const updateForm = (inputName, inputValue) => {
@@ -62,12 +87,12 @@ function App() {
         values={formValues}
         updateForm={updateForm}
         submitForm={submitForm}
-        {...team.map(member => {
-          return (
-            <Users key={member.email} details={member} />
-          )
-        })
-        }
+        // {...team.map(member => {
+        //   return (
+        //     <Users key={member.email} details={member} />
+        //   )
+        // })
+        // }
       />
     </div>
   );
